@@ -1,5 +1,4 @@
 let qr;
-let darkMode = false;
 
 function generateQR() {
   let text = document.getElementById("qrText").value.trim();
@@ -12,7 +11,6 @@ function generateQR() {
     return;
   }
 
-  // Auto-add https:// if missing
   if (!text.startsWith("http://") && !text.startsWith("https://") && text.includes(".")) {
     text = "https://" + text;
   }
@@ -35,6 +33,47 @@ function downloadQR() {
   let imgSrc;
   const canvas = qrContainer.querySelector("canvas");
   const img = qrContainer.querySelector("img");
+
+  if (canvas) imgSrc = canvas.toDataURL("image/png");
+  else if (img) imgSrc = img.src;
+
+  if (!imgSrc) {
+    alert("Unable to download QR code.");
+    return;
+  }
+
+  const link = document.createElement("a");
+  link.href = imgSrc;
+  link.download = "qr-code.png";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+function toggleMode() {
+  const root = document.documentElement;
+  const toggle = document.getElementById("modeToggle");
+
+  if (toggle.checked) {
+    // Dark Blue mode
+    root.style.setProperty('--bg-color', '#0b1e45');
+    root.style.setProperty('--text-color', '#ffffff');
+    root.style.setProperty('--input-bg', '#1a2b5b');
+    root.style.setProperty('--button-bg', '#2196f3');
+    root.style.setProperty('--button-text', '#ffffff');
+    root.style.setProperty('--toggle-bg', '#555');
+    root.style.setProperty('--toggle-circle', '#ffffff');
+  } else {
+    // Light mode
+    root.style.setProperty('--bg-color', '#ffffff');
+    root.style.setProperty('--text-color', '#000000');
+    root.style.setProperty('--input-bg', '#f0f0f0');
+    root.style.setProperty('--button-bg', '#007bff');
+    root.style.setProperty('--button-text', '#ffffff');
+    root.style.setProperty('--toggle-bg', '#ccc');
+    root.style.setProperty('--toggle-circle', '#ffffff');
+  }
+}  const img = qrContainer.querySelector("img");
 
   if (canvas) imgSrc = canvas.toDataURL("image/png");
   else if (img) imgSrc = img.src;
