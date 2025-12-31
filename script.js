@@ -1,8 +1,30 @@
+let qr;
+let darkMode = false;
+
 function generateQR() {
   let text = document.getElementById("qrText").value.trim();
   const result = document.getElementById("qrResult");
 
-  function downloadQR() {
+  result.innerHTML = "";
+
+  if (!text) {
+    alert("Please enter a URL or text.");
+    return;
+  }
+
+  // Auto-add https:// if missing
+  if (!text.startsWith("http://") && !text.startsWith("https://") && text.includes(".")) {
+    text = "https://" + text;
+  }
+
+  qr = new QRCode(result, {
+    text: text,
+    width: 256,
+    height: 256
+  });
+}
+
+function downloadQR() {
   const qrContainer = document.getElementById("qrResult");
 
   if (!qrContainer.firstChild) {
@@ -11,18 +33,11 @@ function generateQR() {
   }
 
   let imgSrc;
-
-  // Case 1: QR rendered as canvas
   const canvas = qrContainer.querySelector("canvas");
-  if (canvas) {
-    imgSrc = canvas.toDataURL("image/png");
-  }
-
-  // Case 2: QR rendered as img
   const img = qrContainer.querySelector("img");
-  if (img) {
-    imgSrc = img.src;
-  }
+
+  if (canvas) imgSrc = canvas.toDataURL("image/png");
+  else if (img) imgSrc = img.src;
 
   if (!imgSrc) {
     alert("Unable to download QR code.");
@@ -35,6 +50,29 @@ function generateQR() {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+}
+
+function toggleMode() {
+  darkMode = !darkMode;
+  const root = document.documentElement;
+  const toggleBtn = document.getElementById("modeToggle");
+
+  if (darkMode) {
+    root.style.setProperty('--bg-color', '#1e1e1e');
+    root.style.setProperty('--text-color', '#ffffff');
+    root.style.setProperty('--input-bg', '#2c2c2c');
+    root.style.setProperty('--button-bg', '#0d6efd');
+    root.style.setProperty('--button-text', '#ffffff');
+    toggleBtn.textContent = "Switch to Light Mode";
+  } else {
+    root.style.setProperty('--bg-color', '#ffffff');
+    root.style.setProperty('--text-color', '#000000');
+    root.style.setProperty('--input-bg', '#f0f0f0');
+    root.style.setProperty('--button-bg', '#007bff');
+    root.style.setProperty('--button-text', '#ffffff');
+    toggleBtn.textContent = "Switch to Dark Mode";
+  }
+}  document.body.removeChild(link);
   }
   
   result.innerHTML = "";
