@@ -126,16 +126,13 @@
 
   <h1>QRForge - QR Code Generator</h1>
 
+  <!-- Minimal toggle -->
   <label class="switch">
-    <input type="checkbox" id="modeToggle" onchange="toggleMode()">
+    <input type="checkbox" id="modeToggle">
     <span class="slider"></span>
   </label>
 
-  <input
-    type="text"
-    id="qrText"
-    placeholder="Enter URL or text"
-  />
+  <input type="text" id="qrText" placeholder="Enter URL or text">
 
   <div>
     <button onclick="generateQR()">Generate QR Code</button>
