@@ -2,22 +2,102 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>QR Code Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QRForge - QR Code Generator</title>
+
+  <style>
+    :root {
+      --bg-color: #ffffff;
+      --text-color: #000000;
+      --input-bg: #f0f0f0;
+      --button-bg: #007bff;
+      --button-text: #ffffff;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    input {
+      padding: 10px;
+      width: 300px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: var(--input-bg);
+      color: var(--text-color);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      border-radius: 5px;
+      background-color: var(--button-bg);
+      color: var(--button-text);
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    #qrResult {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: var(--input-bg);
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      transition: background-color 0.3s;
+    }
+
+    #modeToggle {
+      align-self: flex-end;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 400px) {
+      input {
+        width: 90%;
+      }
+      button {
+        width: 45%;
+        margin: 5px 2px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-  <h1>QR Code Generator</h1>
+  <h1>QRForge - QR Code Generator</h1>
+  <button id="modeToggle" onclick="toggleMode()">Switch to Dark Mode</button>
 
   <input
-  type="text"
-  id="qrText"
-  placeholder="Enter URL or text"
-/>
+    type="text"
+    id="qrText"
+    placeholder="Enter URL or text"
+  />
 
-<button onclick="generateQR()">Generate QR Code</button>
-<button onclick="downloadQR()">Download PNG</button>
+  <div>
+    <button onclick="generateQR()">Generate QR Code</button>
+    <button onclick="downloadQR()">Download PNG</button>
+  </div>
 
-<div id="qrResult"></div>
+  <div id="qrResult"></div>
 
   <!-- QR Code Library -->
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
