@@ -1,18 +1,24 @@
-let qr;
-
 function generateQR() {
-  const text = document.getElementById("qrText").value;
+  let text = document.getElementById("qrText").value.trim();
   const result = document.getElementById("qrResult");
 
-  // Clear previous QR
   result.innerHTML = "";
 
   if (!text) {
-    alert("Please enter some text or a URL.");
+    alert("Please enter a URL or text.");
     return;
   }
 
-  qr = new QRCode(result, {
+  // Auto-add https:// if missing and looks like a URL
+  if (
+    !text.startsWith("http://") &&
+    !text.startsWith("https://") &&
+    text.includes(".")
+  ) {
+    text = "https://" + text;
+  }
+
+  new QRCode(result, {
     text: text,
     width: 256,
     height: 256
