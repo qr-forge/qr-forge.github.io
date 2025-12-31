@@ -9,14 +9,15 @@
   <h1>QR Code Generator</h1>
 
   <input
-    type="text"
-    id="qrText"
-    placeholder="Enter URL or text"
-  />
+  type="text"
+  id="qrText"
+  placeholder="Enter URL or text"
+/>
 
-  <button onclick="generateQR()">Generate QR Code</button>
+<button onclick="generateQR()">Generate QR Code</button>
+<button onclick="downloadQR()">Download PNG</button>
 
-  <div id="qrResult"></div>
+<div id="qrResult"></div>
 
   <!-- QR Code Library -->
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
