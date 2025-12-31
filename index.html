@@ -1,79 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>QRForge - QR Code Generator</title>
 
   <style>
     :root {
-      --bg-color: #ffffff;
-      --text-color: #000000;
-      --input-bg: #f0f0f0;
-      --button-bg: #007bff;
+      --bg: #0b1d3a;
+      --card-bg: #132a52;
+      --input-bg: #1b3b73;
+      --text-color: #ffffff;
+      --button-bg: #3b82f6;
       --button-text: #ffffff;
-      --toggle-bg: #ccc;
-      --toggle-circle: #ffffff;
+      --toggle-bg: #64748b;
     }
 
     body {
-      background-color: var(--bg-color);
-      color: var(--text-color);
       font-family: Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-color);
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px;
-      transition: background-color 0.3s, color 0.3s;
+      justify-content: center;
+      padding: 20px;
     }
 
-    h1 {
-      margin-bottom: 20px;
+    .container {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
     }
 
     input {
+      width: 100%;
       padding: 10px;
-      width: 300px;
       margin: 10px 0;
+      border-radius: 6px;
       border: 1px solid #ccc;
-      border-radius: 5px;
       background-color: var(--input-bg);
       color: var(--text-color);
-      transition: background-color 0.3s, color 0.3s;
     }
 
     button {
       padding: 10px 20px;
       margin: 5px;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
       background-color: var(--button-bg);
       color: var(--button-text);
       cursor: pointer;
-      transition: background-color 0.3s, color 0.3s;
-    }
-
-    button:hover {
-      opacity: 0.9;
     }
 
     #qrResult {
       margin-top: 20px;
       padding: 10px;
-      background-color: var(--input-bg);
+      background: var(--input-bg);
       border-radius: 10px;
       display: flex;
       justify-content: center;
-      transition: background-color 0.3s;
     }
 
-    /* Toggle switch */
+    /* Toggle */
     .switch {
       position: relative;
       display: inline-block;
-      width: 50px;
+      width: 46px;
       height: 24px;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
 
     .switch input {
@@ -85,178 +81,80 @@
     .slider {
       position: absolute;
       cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
+      inset: 0;
       background-color: var(--toggle-bg);
-      transition: 0.4s;
+      transition: .3s;
       border-radius: 24px;
     }
 
-    .slider::before {
+    .slider:before {
       position: absolute;
       content: "";
       height: 18px;
       width: 18px;
       left: 3px;
       bottom: 3px;
-      background-color: var(--toggle-circle);
-      transition: 0.4s;
+      background-color: white;
+      transition: .3s;
       border-radius: 50%;
     }
 
     input:checked + .slider {
-      background-color: #2196f3;
+      background-color: #22c55e;
     }
 
-    input:checked + .slider::before {
-      transform: translateX(26px);
-    }
-
-    @media (max-width: 400px) {
-      input {
-        width: 90%;
-      }
-      button {
-        width: 45%;
-        margin: 5px 2px;
-      }
+    input:checked + .slider:before {
+      transform: translateX(22px);
     }
   </style>
 </head>
+
 <body>
+  <div class="container">
+    <h1>QRForge</h1>
 
-  <h1>QRForge - QR Code Generator</h1>
+    <label class="switch">
+      <input type="checkbox" id="modeToggle">
+      <span class="slider"></span>
+    </label>
 
-  <!-- Minimal toggle -->
-  <label class="switch">
-    <input type="checkbox" id="modeToggle">
-    <span class="slider"></span>
-  </label>
+    <input id="qrInput" placeholder="Enter URL or text" />
 
-  <input type="text" id="qrText" placeholder="Enter URL or text">
+    <div>
+      <button onclick="generateQR()">Generate QR</button>
+      <button onclick="downloadQR()">Download PNG</button>
+    </div>
 
-  <div>
-    <button onclick="generateQR()">Generate QR Code</button>
-    <button onclick="downloadQR()">Download PNG</button>
+    <div id="qrResult"></div>
   </div>
 
-  <div id="qrResult"></div>
-
-  <!-- QR Code Library -->
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
-  <!-- Main JS -->
-  <script src="script.js"></script>
+  <script>
+    let qr;
 
-</body>
-</html>      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      background-color: var(--input-bg);
-      color: var(--text-color);
-      transition: background-color 0.3s, color 0.3s;
+    function generateQR() {
+      const text = document.getElementById("qrInput").value;
+      const container = document.getElementById("qrResult");
+      container.innerHTML = "";
+
+      if (!text) return;
+
+      qr = new QRCode(container, {
+        text,
+        width: 200,
+        height: 200
+      });
     }
 
-    button {
-      padding: 10px 20px;
-      margin: 5px;
-      border: none;
-      border-radius: 5px;
-      background-color: var(--button-bg);
-      color: var(--button-text);
-      cursor: pointer;
-      transition: background-color 0.3s, color 0.3s;
+    function downloadQR() {
+      const img = document.querySelector("#qrResult img");
+      if (!img) return;
+
+      const link = document.createElement("a");
+      link.href = img.src;
+      link.download = "qrforge.png";
+      link.click();
     }
-
-    button:hover {
-      opacity: 0.9;
-    }
-
-    #qrResult {
-      margin-top: 20px;
-      padding: 10px;
-      background-color: var(--input-bg);
-      border-radius: 10px;
-      display: flex;
-      justify-content: center;
-      transition: background-color 0.3s;
-    }
-
-    /* Toggle switch */
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 50px;
-      height: 24px;
-      margin-bottom: 20px;
-    }
-
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: var(--toggle-bg);
-      transition: 0.4s;
-      border-radius: 24px;
-    }
-
-    .slider::before {
-      position: absolute;
-      content: "";
-      height: 18px;
-      width: 18px;
-      left: 3px;
-      bottom: 3px;
-      background-color: var(--toggle-circle);
-      transition: 0.4s;
-      border-radius: 50%;
-    }
-
-    input:checked + .slider {
-      background-color: #2196f3;
-    }
-
-    input:checked + .slider::before {
-      transform: translateX(26px);
-    }
-
-    @media (max-width: 400px) {
-      input {
-        width: 90%;
-      }
-      button {
-        width: 45%;
-        margin: 5px 2px;
-      }
-    }
-  </style>
-</head>
-<body>
-
-  <h1>QRForge - QR Code Generator</h1>
-
-  <!-- Minimal toggle -->
-  <label class="switch">
-    <input type="checkbox" id="modeToggle">
-    <span class="slider"></span>
-  </label>
-
-  <input type="text" id="qrText" placeholder="Enter URL or text">
-
-  <div>
-    <button onclick="generateQR()">Generate QR Code</button>
-    <button onclick="downloadQR()">Download PNG</button>
-  </div>
-
-  <div id="qrResult"></div>
-
-  <!-- QR Code Library -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
-  <script src="script.js"></script>
-
+  </script>
 </body>
 </html>
