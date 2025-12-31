@@ -3,114 +3,158 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>QRForge – QR Code Generator</title>
+  <title>QRForge - QR Code Generator</title>
+
+  <style>
+    :root {
+      --bg: #0b1d3a;
+      --card-bg: #132a52;
+      --input-bg: #1b3b73;
+      --text-color: #ffffff;
+      --button-bg: #3b82f6;
+      --button-text: #ffffff;
+      --toggle-bg: #64748b;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background-color: var(--input-bg);
+      color: var(--text-color);
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      border-radius: 6px;
+      background-color: var(--button-bg);
+      color: var(--button-text);
+      cursor: pointer;
+    }
+
+    #qrResult {
+      margin-top: 20px;
+      padding: 10px;
+      background: var(--input-bg);
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* Toggle */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 46px;
+      height: 24px;
+      margin-bottom: 15px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: var(--toggle-bg);
+      transition: .3s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #22c55e;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(22px);
+    }
+  </style>
 </head>
 
 <body>
+  <div class="container">
+    <h1>QRForge</h1>
 
-  <h1>QRForge – QR Code Generator</h1>
+    <label class="switch">
+      <input type="checkbox" id="modeToggle">
+      <span class="slider"></span>
+    </label>
 
-  <!-- Optional mode toggle (UI only, safe placeholder) -->
-  <label>
-    <input type="checkbox" id="modeToggle" />
-    Mode
-  </label>
+    <input id="qrInput" placeholder="Enter URL or text" />
 
-  <br><br>
+    <div>
+      <button onclick="generateQR()">Generate QR</button>
+      <button onclick="downloadQR()">Download PNG</button>
+    </div>
 
-  <!-- Text / URL input -->
-  <input
-    type="text"
-    id="qrInput"
-    placeholder="Enter URL or text"
-  />
+    <div id="qrResult"></div>
+  </div>
 
-  <br><br>
-
-  <!-- Logo upload -->
-  <input
-    type="file"
-    id="logoInput"
-    accept="image/*"
-  />
-
-  <br><br>
-
-  <!-- Actions -->
-  <button onclick="generateQR()">Generate QR Code</button>
-  <button onclick="downloadQR()">Download PNG</button>
-
-  <br><br>
-
-  <!-- Final QR canvas -->
-  <canvas id="qrCanvas" width="200" height="200"></canvas>
-
-  <!-- QR library -->
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
-
   <script>
-    const canvas = document.getElementById("qrCanvas");
-    const ctx = canvas.getContext("2d");
+    let qr;
 
     function generateQR() {
-      const text = document.getElementById("qrInput").value.trim();
-      const logoFile = document.getElementById("logoInput").files[0];
+      const text = document.getElementById("qrInput").value;
+      const container = document.getElementById("qrResult");
+      container.innerHTML = "";
 
-      if (!text) {
-        alert("Please enter text or a URL.");
-        return;
-      }
+      if (!text) return;
 
-      // Temporary container for QRCode.js
-      const tempDiv = document.createElement("div");
-
-      new QRCode(tempDiv, {
-        text: text,
+      qr = new QRCode(container, {
+        text,
         width: 200,
-        height: 200,
-        correctLevel: QRCode.CorrectLevel.H
+        height: 200
       });
-
-      // Wait for QR image to render
-      setTimeout(() => {
-        const qrImg = tempDiv.querySelector("img");
-
-        if (!qrImg) return;
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(qrImg, 0, 0, 200, 200);
-
-        if (logoFile) {
-          const logo = new Image();
-          logo.onload = () => {
-            const logoSize = 50;
-            const x = (200 - logoSize) / 2;
-            const y = (200 - logoSize) / 2;
-
-            // White background under logo (scan safety)
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(
-              x - 6,
-              y - 6,
-              logoSize + 12,
-              logoSize + 12
-            );
-
-            ctx.drawImage(logo, x, y, logoSize, logoSize);
-          };
-
-          logo.src = URL.createObjectURL(logoFile);
-        }
-      }, 100);
     }
 
     function downloadQR() {
+      const img = document.querySelector("#qrResult img");
+      if (!img) return;
+
       const link = document.createElement("a");
+      link.href = img.src;
       link.download = "qrforge.png";
-      link.href = canvas.toDataURL("image/png");
       link.click();
     }
   </script>
-
 </body>
 </html>
